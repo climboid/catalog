@@ -20,30 +20,8 @@
 	  </div><!-- /.container-fluid -->
 	</nav>
 	<div class="container">
-		<div class="row">
-			<div class="col-xs-3 catalogItems">
-				<h2>Categories</h2>
-				<ul class="list-unstyled">
-			  {% for category in categories %}
-			      <li> 
-			      	<a href="{{url_for('showCategoryItems', category_id = category.id)}}">{{ category.name }}</a>
-			      </li>
-			  {% endfor %}
-			  </ul>
-			</div>
-			<div class="col-xs-9">
-				<h2>List Items</h2>
-				<ul class="list-unstyled">
-			  {% for category_item in items %}
-			      <li>
-			      	<a href="{{url_for('categoryItem', category_name = category_item.category.name, item_id = category_item.id)}}">
-				      	{{ category_item.name }}
-				      	<small>({{ category_item.category.name }})</small>
-			      	</a>
-			      </li>
-			  {% endfor %}
-			  </ul>
-			</div>
+		<div class="jumbotron">
+		  <p>{{item.description}}</p>
 		</div>
 	</div>
 	

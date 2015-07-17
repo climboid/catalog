@@ -11,25 +11,32 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-
+#
+# Landig page
+#
 @app.route('/')
-def restaurantsJSON():
+def intropage():
     categories = session.query(Category).all()
-    #categories = jsonify(categories=[r.serialize for r in categories])
     items = session.query(CategoryItem).all()
-    #items = jsonify(items=[r.serialize for r in items])
-    #return jsonify(categories=[r.serialize for r in categories], items=[r.serialize for r in items])
     return render_template('main.html', categories = categories, items = items)
 
+#
+# Show all items that belong to a category
+#
+@app.route('/catalog/<int:category_id>/items')
+def showCategoryItems(category_id):
+	categories = session.query(Category).all()
+	category = session.query(Category).filter_by(id=category_id).one()
+	items = session.query(CategoryItem).filter_by(category_id=category_id).all()
+	return render_template('category-items.html', items=items, categories=categories, category=category)
 
-# Show all restaurants
-# @app.route('/')
-# @app.route('/restaurant/')
-# def showRestaurants():
-#     restaurants = session.query(Restaurant).all()
-#     # return "This page will show all my restaurants"
-#     return render_template('restaurants.html', restaurants=restaurants)
-
+#
+# Show a description of a category item
+# TODO finish getting the URL just right
+@app.route('/catalog/<string:category_name>/<int:item_id>')
+def categoryItem(category_name, item_id):
+	item = session.query(CategoryItem).filter_by(id = item_id).one()
+	return render_template('category-item.html', item = item)
 
 if __name__ == '__main__':
     app.debug = True

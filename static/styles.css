@@ -15,6 +15,10 @@ h2{
 	font-weight: lighter;
 }
 
+small {
+	opacity: 0.5;
+}
+
 .navbar{
 	margin-bottom: 0;
 }

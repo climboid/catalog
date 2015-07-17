@@ -32,14 +32,11 @@
 			  </ul>
 			</div>
 			<div class="col-xs-9">
-				<h2>List Items</h2>
+				<h2>{{ category.name }} ({{items|length}} items)</h2>
 				<ul class="list-unstyled">
 			  {% for category_item in items %}
 			      <li>
-			      	<a href="{{url_for('categoryItem', category_name = category_item.category.name, item_id = category_item.id)}}">
-				      	{{ category_item.name }}
-				      	<small>({{ category_item.category.name }})</small>
-			      	</a>
+			      	{{ category_item.name }}
 			      </li>
 			  {% endfor %}
 			  </ul>
