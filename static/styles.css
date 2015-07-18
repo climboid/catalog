@@ -32,3 +32,8 @@ small {
 	list-style: none;
 }
 
+.jumbotron{
+	margin-top: 1em;
+	padding: 10px;
+}
+

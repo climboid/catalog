@@ -23,7 +23,7 @@ def intropage():
 #
 # Show all items that belong to a category
 #
-@app.route('/catalog/<int:category_id>/items')
+@app.route('/category/<int:category_id>/items')
 def showCategoryItems(category_id):
 	categories = session.query(Category).all()
 	category = session.query(Category).filter_by(id=category_id).one()
@@ -33,10 +33,34 @@ def showCategoryItems(category_id):
 #
 # Show a description of a category item
 # TODO finish getting the URL just right
-@app.route('/catalog/<string:category_name>/<int:item_id>')
+@app.route('/category/<string:category_name>/<int:item_id>')
 def categoryItem(category_name, item_id):
 	item = session.query(CategoryItem).filter_by(id = item_id).one()
 	return render_template('category-item.html', item = item)
+
+
+#
+# Edit the category item
+#
+@app.route('/category/<string:category_name>/<int:item_id>/edit',
+           methods=['GET', 'POST'])
+def editMenuItem(category_name, item_id):
+    editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            editedItem.name = request.form['name']
+        if request.form['description']:
+            editedItem.description = request.form['description']
+        session.add(editedItem)
+        session.commit()
+        #return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+    else:
+
+        return render_template(
+            'editcategory-item.html', item = editedItem)
+
+    # return 'This page is for editing menu item %s' % menu_id
+
 
 if __name__ == '__main__':
     app.debug = True

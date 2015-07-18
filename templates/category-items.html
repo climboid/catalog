@@ -33,10 +33,12 @@
 			</div>
 			<div class="col-xs-9">
 				<h2>{{ category.name }} ({{items|length}} items)</h2>
-				<ul class="list-unstyled">
+			  <ul class="list-unstyled">
 			  {% for category_item in items %}
 			      <li>
-			      	{{ category_item.name }}
+			      	<a href="{{url_for('categoryItem', category_name = category_item.category.name, item_id = category_item.id)}}">
+				      	{{ category_item.name }}
+			      	</a>
 			      </li>
 			  {% endfor %}
 			  </ul>
