@@ -37,3 +37,7 @@ small {
 	padding: 10px;
 }
 
+.dropdown-menu form {
+	padding: 20px 20px 0;
+}
+
