@@ -36,7 +36,7 @@
 			  <ul class="list-unstyled">
 			  {% for category_item in items %}
 			      <li>
-			      	<a href="{{url_for('categoryItem', category_name = category_item.category.name, item_id = category_item.id)}}">
+			      	<a href="{{url_for('categoryItem', category_id = category_item.category.id, item_id = category_item.id)}}">
 				      	{{ category_item.name }}
 			      	</a>
 			      </li>

@@ -33,8 +33,8 @@ def showCategoryItems(category_id):
 #
 # Show a description of a category item
 # TODO finish getting the URL just right
-@app.route('/category/<string:category_name>/<int:item_id>')
-def categoryItem(category_name, item_id):
+@app.route('/category/<int:category_id>/item/<int:item_id>')
+def categoryItem(category_id, item_id):
 	item = session.query(CategoryItem).filter_by(id = item_id).one()
 	return render_template('category-item.html', item = item)
 
@@ -42,9 +42,9 @@ def categoryItem(category_name, item_id):
 #
 # Edit the category item
 #
-@app.route('/category/<string:category_name>/<int:item_id>/edit',
+@app.route('/category/<int:category_id>/item/<int:item_id>/edit',
            methods=['GET', 'POST'])
-def editMenuItem(category_name, item_id):
+def editCategoryItem(category_id, item_id):
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -59,7 +59,24 @@ def editMenuItem(category_name, item_id):
         return render_template(
             'editcategory-item.html', item = editedItem)
 
-    # return 'This page is for editing menu item %s' % menu_id
+#
+# Delete category item
+#
+@app.route('/category/<int:category_id>/item/<int:item_id>/delete', 
+    methods=['GET', 'POST'])
+def deleteCategoryItem(category_id, item_id):
+    itemToDelete = session.query(CategoryItem).filter_by(id=item_id).one()
+    category = session.query(Category).filter_by(id=category_id).one()
+    if request.method == 'POST':
+        session.delete(itemToDelete)
+        session.commit()
+        return redirect(
+            url_for('showCategoryItems', category_id=category.id))
+    else:
+        return render_template(
+            'deletecategory-item.html', item=itemToDelete, category = category)
+    # return 'This page will be for deleting restaurant %s' % restaurant_id
+
 
 
 if __name__ == '__main__':
