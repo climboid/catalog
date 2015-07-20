@@ -45,19 +45,23 @@ def categoryItem(category_id, item_id):
 @app.route('/category/<int:category_id>/item/<int:item_id>/edit',
            methods=['GET', 'POST'])
 def editCategoryItem(category_id, item_id):
+    category= session.query(Category).filter_by(id=category_id).one()
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    print 'request.method', request.method
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
         if request.form['description']:
             editedItem.description = request.form['description']
+        if request.form['category']:
+            editedItem.category.name = request.form['category']
         session.add(editedItem)
         session.commit()
-        #return redirect(url_for('showMenu', restaurant_id=restaurant_id))
+        return redirect(url_for('intropage'))
     else:
 
         return render_template(
-            'editcategory-item.html', item = editedItem)
+            'editcategory-item.html', item = editedItem, category = category)
 
 #
 # Delete category item

@@ -41,3 +41,7 @@ small {
 	padding: 20px 20px 0;
 }
 
+.dropdown-menu{
+	min-width: 220px;
+}
+
