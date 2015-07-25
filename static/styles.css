@@ -37,11 +37,6 @@ small {
 	padding: 10px;
 }
 
-.dropdown-menu form {
-	padding: 20px 20px 0;
+.dropdown-menu {
+	padding: 20px 20px 10px;
 }
-
-.dropdown-menu{
-	min-width: 220px;
-}
-

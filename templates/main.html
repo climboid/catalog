@@ -1,70 +1,87 @@
 <!DOCTYPE html>
-<head>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-	<nav class="navbar navbar-default">
-	  <div class="container">
-	    <!-- Brand and toggle get grouped for better mobile display -->
-	    <div class="navbar-header">
-	      <a class="navbar-brand" href="#">Brand</a>
-	    </div>
+<html lang="en">
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+		</script>
+		<script src="//apis.google.com/js/platform.js?onload=start" async defer> </script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+		  <div class="container">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="#">Brand</a>
+		    </div>
 
-	    <!-- Collect the nav links, forms, and other content for toggling -->
-	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <ul class="nav navbar-nav navbar-right">
-	        <li class="dropdown">
-	          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login <span class="caret"></span></a>
-	          <ul class="dropdown-menu">
-	            <li>
-	            	<form>
-								  <div class="form-group">
-								  	<label for="username">Username</label>
-								    <input type="text" class="form-control" id="username" placeholder="Username">
-								  </div>
-								  <div class="form-group">
-								    <label for="password">Password</label>
-								    <input type="password" class="form-control" id="password" placeholder="Password">
-								  </div>
-								  <button type="submit" class="btn btn-default">Login</button>
-								  <button type="submit" class="btn btn-default">Logout</button>
-								</form>
-	            </li>
-	          </ul>
-	        </li>
-	      </ul>
-	    </div><!-- /.navbar-collapse -->
-	  </div><!-- /.container-fluid -->
-	</nav>
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-3 catalogItems">
-				<h2>Categories</h2>
-				<ul class="list-unstyled">
-			  {% for category in categories %}
-		      <li> 
-		      	<a href="{{url_for('showCategoryItems', category_id = category.id)}}">{{ category.name }}</a>
-		      </li>
-			  {% endfor %}
-			  </ul>
-			</div>
-			<div class="col-xs-9">
-				<h2>List Items</h2>
-				<ul class="list-unstyled">
-			  {% for category_item in items %}
-			      <li>
-			      	<a href="{{url_for('categoryItem', category_id = category_item.category.id, item_id = category_item.id)}}">
-				      	{{ category_item.name }}
-				      	<small>({{ category_item.category.name }})</small>
-			      	</a>
-			      </li>
-			  {% endfor %}
-			  </ul>
-			</div>
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav navbar-right">
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login <span class="caret"></span></a>
+		          <ul class="dropdown-menu">
+		            <li>
+		            	<div id="signInButton">
+									  <span class="g-signin"
+									    data-scope="openid email"
+									    data-clientid="596847391258-u585793r3i8udnr3hu9d3f2ksbqq4bt4.apps.googleusercontent.com"
+									    data-redirecturi="postmessage"
+									    data-accesstype="offline"
+									    data-cookiepolicy="single_host_origin"
+									    data-callback="signInCallback"
+									    data-approvalprompt="force">
+									  </span>
+									</div>
+
+									<div id="result"></div>
+		            </li>
+		          </ul>
+		        </li>
+		      </ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+		<div class="container">
+			{% block content %}
+			{% endblock %}
 		</div>
-	</div>
-	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
-</body>
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script>
+		  function signInCallback(authResult) {
+		    if (authResult['code']) {
+		      // Hide the sign-in button now that the user is authorized
+		      $('#signinButton').attr('style', 'display: none');
+		      // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main restaurants page
+		      console.log("making the signInCallback")
+		      $.ajax({
+		        type: 'POST',
+		        url: '/gconnect?state={{STATE}}',
+		        processData: false,
+		        data: authResult['code'],
+		        contentType: 'application/octet-stream; charset=utf-8',
+		        success: function(result) {
+		        // Handle or verify the server response if necessary.
+		          if (result) {
+		            $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+		            setTimeout(function() {
+		              window.location.href = "/";
+		            }, 4000);
+		          } else if (authResult['error']) {
+		            console.log('There was an error: ' + authResult['error']);
+		          } else {
+		            console.log("in the error!!!!!");
+		            $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+		          }
+		        },
+		        error: function(data) {
+		          console.log('error', data);
+		        }
+		        
+		      }); 
+		    } 
+		  }
+		</script>
+	</body>
 </html>

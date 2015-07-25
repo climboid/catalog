@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for
+from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem
@@ -115,8 +115,52 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    output = ''
+    output += '<h1>Welcome, '
+    output += login_session['username']
+    output += '!</h1>'
+    output += '<img src="'
+    output += login_session['picture']
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    flash("you are now logged in as %s" % login_session['username'])
     print "done!"
-    return redirect(url_for('intropage'))
+    return output
+
+#
+# Logout
+#
+@app.route('/gdisconnect')
+def gdisconnect():
+        # Only disconnect a connected user.
+    credentials = login_session.get('credentials')
+    if credentials is None:
+        response = make_response(
+            json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    access_token = credentials.access_token
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    if result['status'] == '200':
+        # Reset the user's sesson.
+        del login_session['credentials']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        # For whatever reason, the given token was invalid.
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
 #
 # Landig page
 #
@@ -124,7 +168,10 @@ def gconnect():
 def intropage():
     categories = session.query(Category).all()
     items = session.query(CategoryItem).all()
-    return render_template('main.html', categories = categories, items = items)
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
+    return render_template('category.html', categories = categories, items = items, STATE = state)
 
 #
 # Show all items that belong to a category
@@ -152,6 +199,8 @@ def categoryItem(category_id, item_id):
 @app.route('/category/<int:category_id>/item/<int:item_id>/edit',
            methods=['GET', 'POST'])
 def editCategoryItem(category_id, item_id):
+    if "username" not in login_session:
+        return redirect('/login')
     category= session.query(Category).filter_by(id=category_id).one()
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
     print 'request.method', request.method
@@ -176,6 +225,8 @@ def editCategoryItem(category_id, item_id):
 @app.route('/category/<int:category_id>/item/<int:item_id>/delete', 
     methods=['GET', 'POST'])
 def deleteCategoryItem(category_id, item_id):
+    if "username" not in login_session:
+        return redirect('/login')
     itemToDelete = session.query(CategoryItem).filter_by(id=item_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
