@@ -31,13 +31,13 @@ session = DBSession()
 
 
 # Create anti-forgery state token
-@app.route('/login')
-def showLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
-    login_session['state'] = state
-    # return "The current session state is %s" % login_session['state']
-    return render_template('login.html', STATE=state)
+# @app.route('/login')
+# def showLogin():
+#     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+#                     for x in xrange(32))
+#     login_session['state'] = state
+#     # return "The current session state is %s" % login_session['state']
+#     return render_template('login.html', STATE=state)
 
 #
 #
@@ -200,7 +200,7 @@ def categoryItem(category_id, item_id):
            methods=['GET', 'POST'])
 def editCategoryItem(category_id, item_id):
     if "username" not in login_session:
-        return redirect('/login')
+        return redirect('/')
     category= session.query(Category).filter_by(id=category_id).one()
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
     print 'request.method', request.method
@@ -226,7 +226,7 @@ def editCategoryItem(category_id, item_id):
     methods=['GET', 'POST'])
 def deleteCategoryItem(category_id, item_id):
     if "username" not in login_session:
-        return redirect('/login')
+        return redirect('/')
     itemToDelete = session.query(CategoryItem).filter_by(id=item_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
