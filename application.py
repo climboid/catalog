@@ -217,7 +217,6 @@ def editCategoryItem(category_id, item_id):
     if credentials is None:
         return redirect('/')
     categories = session.query(Category).all()
-    currentCategory = session.query(Category).filter_by(id=category_id).one()
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
     
     if request.method == 'POST':
@@ -226,14 +225,14 @@ def editCategoryItem(category_id, item_id):
         if request.form['description']:
             editedItem.description = request.form['description']
         if request.form['category']:
-            editedItem.category = request.form['category']
+            editedItem.category_id = request.form['category']
         session.add(editedItem)
         session.commit()
         return redirect(url_for('intropage'))
     else:
 
         return render_template(
-            'editcategory-item.html', item = editedItem, categories = categories, currentCategory = currentCategory, login_session = login_session)
+            'editcategory-item.html', item = editedItem, categories = categories, login_session = login_session)
 
 #
 # Add a category item
