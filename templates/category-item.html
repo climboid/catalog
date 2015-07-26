@@ -5,9 +5,9 @@
 	  <p>Description: {{item.description}}</p>
 	  <p>
 	  	<small>
-	  		<a href="{{url_for('editCategoryItem',category_id = category.id, item_id = item.id)}}">Edit</a>
+	  		<a href="{{url_for('editCategoryItem',category_id = category.id, item_id = item.id)}}" class="addItems">Edit</a>
 	  		<span>----</span>
-	  		<a href="{{url_for('deleteCategoryItem', category_id = category.id, item_id = item.id)}}">Delete</a>
+	  		<a href="{{url_for('deleteCategoryItem', category_id = category.id, item_id = item.id)}}" class="addItems">Delete</a>
 	  	</small>
 	  </p>
 	</div>

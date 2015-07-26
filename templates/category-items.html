@@ -12,6 +12,10 @@
 		  </ul>
 		</div>
 		<div class="col-xs-9">
+			{% if login_session %}
+				<br>
+				<a href="" class="addItems">Add Items</a>
+			{% endif %}
 			<h2>{{ category.name }} ({{items|length}} items)</h2>
 		  <ul class="list-unstyled">
 		  {% for category_item in items %}
