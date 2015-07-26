@@ -200,11 +200,11 @@ def showCategoryItems(category_id):
 def categoryItem(category_id, item_id):
     credentials = login_session.get('credentials')
     item = session.query(CategoryItem).filter_by(id = item_id).one()
-    
+    category= session.query(Category).filter_by(id=category_id).one()
     if credentials is None:
-        return render_template('category-item.html', item = item)
+        return render_template('category-item.html', item = item, category = category)
     else:
-        return render_template('category-item.html', item = item, login_session = login_session)
+        return render_template('category-item.html', item = item, category = category, login_session = login_session)
 
 
 #
@@ -218,7 +218,7 @@ def editCategoryItem(category_id, item_id):
         return redirect('/')
     category= session.query(Category).filter_by(id=category_id).one()
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
-    print 'request.method', request.method
+    
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -240,6 +240,7 @@ def editCategoryItem(category_id, item_id):
 @app.route('/category/<int:category_id>/item/<int:item_id>/delete', 
     methods=['GET', 'POST'])
 def deleteCategoryItem(category_id, item_id):
+    credentials = login_session.get('credentials')
     if credentials is None:
         return redirect('/')
     itemToDelete = session.query(CategoryItem).filter_by(id=item_id).one()

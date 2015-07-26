@@ -12,6 +12,10 @@
 		  </ul>
 		</div>
 		<div class="col-xs-9">
+			{% if login_session %}
+				<br>
+				<a href="">Add Items</a>
+			{% endif %}
 			<h2>List Items</h2>
 			<ul class="list-unstyled">
 		  {% for category_item in items %}
