@@ -31,13 +31,13 @@ session = DBSession()
 
 
 # Create anti-forgery state token
-# @app.route('/login')
-# def showLogin():
-#     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-#                     for x in xrange(32))
-#     login_session['state'] = state
-#     # return "The current session state is %s" % login_session['state']
-#     return render_template('login.html', STATE=state)
+@app.route('/login')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for x in xrange(32))
+    login_session['state'] = state
+    # return "The current session state is %s" % login_session['state']
+    return render_template('login.html', STATE=state)
 
 #
 #
@@ -168,29 +168,43 @@ def gdisconnect():
 def intropage():
     categories = session.query(Category).all()
     items = session.query(CategoryItem).all()
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for x in xrange(32))
-    login_session['state'] = state
-    return render_template('category.html', categories = categories, items = items, STATE = state)
+    credentials = login_session.get('credentials')
+    
+    # state = ''.join(random.choice(string.ascii_uppercase + string.digits)
+    #                 for x in xrange(32))
+    # login_session['state'] = state
+    if credentials is None:
+        return render_template('category.html', categories = categories, items = items)
+    else:
+        return render_template('category.html', categories = categories, items = items, login_session = login_session)
 
 #
 # Show all items that belong to a category
 #
 @app.route('/category/<int:category_id>/items')
 def showCategoryItems(category_id):
-	categories = session.query(Category).all()
-	category = session.query(Category).filter_by(id=category_id).one()
-	items = session.query(CategoryItem).filter_by(category_id=category_id).all()
-	return render_template('category-items.html', items=items, 
-        categories=categories, category=category)
+    credentials = login_session.get('credentials')
+    categories = session.query(Category).all()
+    category = session.query(Category).filter_by(id=category_id).one()
+    items = session.query(CategoryItem).filter_by(category_id=category_id).all()
+
+    if credentials is None:
+        return render_template('category-items.html', items=items, categories=categories, category=category)
+    else:
+        return render_template('category-items.html', items=items, categories=categories, category=category, login_session = login_session)
 
 #
 # Show a description of a category item
 # TODO finish getting the URL just right
 @app.route('/category/<int:category_id>/item/<int:item_id>')
 def categoryItem(category_id, item_id):
-	item = session.query(CategoryItem).filter_by(id = item_id).one()
-	return render_template('category-item.html', item = item)
+    credentials = login_session.get('credentials')
+    item = session.query(CategoryItem).filter_by(id = item_id).one()
+    
+    if credentials is None:
+        return render_template('category-item.html', item = item)
+    else:
+        return render_template('category-item.html', item = item, login_session = login_session)
 
 
 #
@@ -199,7 +213,8 @@ def categoryItem(category_id, item_id):
 @app.route('/category/<int:category_id>/item/<int:item_id>/edit',
            methods=['GET', 'POST'])
 def editCategoryItem(category_id, item_id):
-    if "username" not in login_session:
+    credentials = login_session.get('credentials')
+    if credentials is None:
         return redirect('/')
     category= session.query(Category).filter_by(id=category_id).one()
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
@@ -217,7 +232,7 @@ def editCategoryItem(category_id, item_id):
     else:
 
         return render_template(
-            'editcategory-item.html', item = editedItem, category = category)
+            'editcategory-item.html', item = editedItem, category = category, login_session = login_session)
 
 #
 # Delete category item
@@ -225,7 +240,7 @@ def editCategoryItem(category_id, item_id):
 @app.route('/category/<int:category_id>/item/<int:item_id>/delete', 
     methods=['GET', 'POST'])
 def deleteCategoryItem(category_id, item_id):
-    if "username" not in login_session:
+    if credentials is None:
         return redirect('/')
     itemToDelete = session.query(CategoryItem).filter_by(id=item_id).one()
     category = session.query(Category).filter_by(id=category_id).one()
@@ -236,7 +251,7 @@ def deleteCategoryItem(category_id, item_id):
             url_for('showCategoryItems', category_id=category.id))
     else:
         return render_template(
-            'deletecategory-item.html', item=itemToDelete, category = category)
+            'deletecategory-item.html', item=itemToDelete, category = category, login_session = login_session)
     # return 'This page will be for deleting restaurant %s' % restaurant_id
 
 

@@ -40,3 +40,9 @@ small {
 .dropdown-menu {
 	padding: 20px 20px 10px;
 }
+
+.userpic{
+	width: 25px;
+	border-radius: 13px;
+	margin-left: 10px;
+}
