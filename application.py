@@ -178,6 +178,7 @@ def intropage():
     else:
         return render_template('category.html', categories = categories, items = items, login_session = login_session)
 
+
 #
 # Show all items that belong to a category
 #
@@ -192,6 +193,14 @@ def showCategoryItems(category_id):
         return render_template('category-items.html', items=items, categories=categories, category=category)
     else:
         return render_template('category-items.html', items=items, categories=categories, category=category, login_session = login_session)
+
+#
+# Show all items that belong to a category in JSON format
+#
+@app.route('/category/<int:category_id>/items/JSON')
+def restaurantMenuJSON(category_id):
+    items = session.query(CategoryItem).filter_by(category_id=category_id).all()
+    return jsonify(CategoryItems=[i.serialize for i in items])
 
 #
 # Show a description of a category item
