@@ -13,8 +13,16 @@
 			    <textarea class="form-control" size="250" name="description">{{item.description}}</textarea>
 			  </div>
 			  <div class="form-group">
-			    <label for="description">Category</label>
-			    <input type="text" class="form-control" name="category" value="{{category.name}}">
+			    <label for="description">Categories</label>
+			    <select class="form-control" name="category">
+			    	{% for category in categories %}
+			    		{% if currentCategory.id != category.id %}
+			    			<option name="{{category.id}}">{{category.name}}</option>
+			    		{% else %}
+			    			<option name="{{category.id}}" selected>{{category.name}}</option>
+			    		{% endif %}
+			    	{% endfor %}
+			    </select>
 			  </div>
 			  <div class="text-right">
 			  	<a href="">cancel</a>
