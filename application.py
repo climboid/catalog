@@ -235,6 +235,36 @@ def editCategoryItem(category_id, item_id):
             'editcategory-item.html', item = editedItem, category = category, login_session = login_session)
 
 #
+# Add a category item
+#
+@app.route('/category/add', methods=['GET', 'POST'])
+def addCategoryItem():
+    credentials = login_session.get('credentials')
+    if credentials is None:
+        return redirect('/')
+
+# id = Column(Integer, primary_key=True)
+# name = Column(String(250), nullable=False)
+# description = Column(String(500), nullable=False)
+# category_id = Column(Integer, ForeignKey('category.id'))
+# category = relationship(Category)
+
+    if request.method == 'POST':
+        newCategory = Category(name=request.form['category'])
+        session.add(newCategory)
+        session.commit()
+
+        newItem = CategoryItem(name=request.form['name'],
+                description=request.form['description'],
+                category = newCategory)
+
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('intropage'))
+    else:
+        return render_template('addcategory-item.html', login_session = login_session)
+
+#
 # Delete category item
 #
 @app.route('/category/<int:category_id>/item/<int:item_id>/delete', 
