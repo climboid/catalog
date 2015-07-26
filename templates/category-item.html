@@ -3,12 +3,14 @@
 	<div class="jumbotron">
 		<h2>{{item.name}}</h2>
 	  <p>Description: {{item.description}}</p>
-	  <p>
-	  	<small>
-	  		<a href="{{url_for('editCategoryItem',category_id = category.id, item_id = item.id)}}" class="addItems">Edit</a>
-	  		<span>----</span>
-	  		<a href="{{url_for('deleteCategoryItem', category_id = category.id, item_id = item.id)}}" class="addItems">Delete</a>
-	  	</small>
-	  </p>
+	  {% if login_session %}
+		  <p>
+		  	<small>
+		  		<a href="{{url_for('editCategoryItem',category_id = category.id, item_id = item.id)}}" class="addItems">Edit</a>
+		  		<span>----</span>
+		  		<a href="{{url_for('deleteCategoryItem', category_id = category.id, item_id = item.id)}}" class="addItems">Delete</a>
+		  	</small>
+		  </p>
+		 {% endif %}
 	</div>
 {% endblock %}

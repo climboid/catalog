@@ -6,17 +6,15 @@
 			<form class="jumbotron" method="post">
 			  <div class="form-group">
 			    <label for="name">Name</label>
-			    <input class="form-control" type ="text" size='30' name='name' 
-			    placeholder = '{{item.name }}' >
+			    <input class="form-control" type ="text" size='30' name='name' value="{{item.name }}">
 			  </div>
 			  <div class="form-group">
 			    <label for="description">Description</label>
-			    <textarea class="form-control" size="250" name="description" 
-			    placeholder="{{item.description}}"></textarea>
+			    <textarea class="form-control" size="250" name="description">{{item.description}}</textarea>
 			  </div>
 			  <div class="form-group">
 			    <label for="description">Category</label>
-			    <input type="text" class="form-control" name="category" placeholder="{{category.name}}">
+			    <input type="text" class="form-control" name="category" value="{{category.name}}">
 			  </div>
 			  <div class="text-right">
 			  	<a href="">cancel</a>
