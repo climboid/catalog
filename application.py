@@ -40,7 +40,7 @@ def showLogin():
     return render_template('login.html', STATE=state)
 
 #
-#
+# Connect OAUTH with Google
 #
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -127,7 +127,7 @@ def gconnect():
     return output
 
 #
-# Logout
+# Logout Google OAUTH
 #
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -195,7 +195,7 @@ def showCategoryItems(category_id):
 
 #
 # Show a description of a category item
-# TODO finish getting the URL just right
+# 
 @app.route('/category/<int:category_id>/item/<int:item_id>')
 def categoryItem(category_id, item_id):
     credentials = login_session.get('credentials')
@@ -243,20 +243,23 @@ def addCategoryItem():
     if credentials is None:
         return redirect('/')
 
+    category_list = session.query(Category).all()
+
     if request.method == 'POST':
-        newCategory = Category(name=request.form['category'])
-        session.add(newCategory)
-        session.commit()
+        
+        selectedCategory = name=request.form['category']
+        print 'selectedCategory', selectedCategory
+        category= session.query(Category).filter_by(id=selectedCategory).one()
 
         newItem = CategoryItem(name=request.form['name'],
                 description=request.form['description'],
-                category = newCategory)
+                category = category)
 
         session.add(newItem)
         session.commit()
         return redirect(url_for('intropage'))
     else:
-        return render_template('addcategory-item.html', login_session = login_session)
+        return render_template('addcategory-item.html', category_list = category_list, login_session = login_session)
 
 #
 # Delete category item

@@ -14,7 +14,12 @@
 			  </div>
 			  <div class="form-group">
 			    <label for="description">Category *</label>
-			    <input type="text" class="form-control" name="category" required>
+			    <select class="form-control" name="category">
+			    	{% for category in category_list %}
+			    		<option value="{{category.id}}">{{category.name}}</option>
+			    	{% endfor %}
+			    </select>
+			    <!-- <input type="text" class="form-control" name="category" required> -->
 			  </div>
 			  <div class="text-right">
 			  	<a href="">cancel</a>
