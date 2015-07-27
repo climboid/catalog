@@ -121,7 +121,8 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius:'
+    output += ' 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -174,9 +175,11 @@ def intropage():
     #                 for x in xrange(32))
     # login_session['state'] = state
     if credentials is None:
-        return render_template('category.html', categories = categories, items = items)
+        return render_template('category.html', categories = categories, 
+            items = items)
     else:
-        return render_template('category.html', categories = categories, items = items, login_session = login_session)
+        return render_template('category.html', categories = categories, 
+            items = items, login_session = login_session)
 
 
 #
@@ -190,9 +193,12 @@ def showCategoryItems(category_id):
     items = session.query(CategoryItem).filter_by(category_id=category_id).all()
 
     if credentials is None:
-        return render_template('category-items.html', items=items, categories=categories, category=category)
+        return render_template('category-items.html', items=items, 
+            categories=categories, category=category)
     else:
-        return render_template('category-items.html', items=items, categories=categories, category=category, login_session = login_session)
+        return render_template('category-items.html', items=items, 
+            categories=categories, category=category, 
+            login_session = login_session)
 
 #
 # Show all items that belong to a category in JSON format
@@ -211,9 +217,11 @@ def categoryItem(category_id, item_id):
     item = session.query(CategoryItem).filter_by(id = item_id).one()
     category= session.query(Category).filter_by(id=category_id).one()
     if credentials is None:
-        return render_template('category-item.html', item = item, category = category)
+        return render_template('category-item.html', item = item, 
+            category = category)
     else:
-        return render_template('category-item.html', item = item, category = category, login_session = login_session)
+        return render_template('category-item.html', item = item, 
+            category = category, login_session = login_session)
 
 
 #
@@ -227,7 +235,8 @@ def editCategoryItem(category_id, item_id):
         return redirect('/')
     categories = session.query(Category).all()
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
-    
+    category = session.query(Category).filter_by(id=category_id).one();
+
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -241,7 +250,8 @@ def editCategoryItem(category_id, item_id):
     else:
 
         return render_template(
-            'editcategory-item.html', item = editedItem, categories = categories, login_session = login_session)
+            'editcategory-item.html', item = editedItem, 
+            categories = categories, category = category, login_session = login_session)
 
 #
 # Add a category item
@@ -268,7 +278,8 @@ def addCategoryItem():
         session.commit()
         return redirect(url_for('intropage'))
     else:
-        return render_template('addcategory-item.html', category_list = category_list, login_session = login_session)
+        return render_template('addcategory-item.html', 
+            category_list = category_list, login_session = login_session)
 
 #
 # Delete category item
@@ -288,7 +299,8 @@ def deleteCategoryItem(category_id, item_id):
             url_for('showCategoryItems', category_id=category.id))
     else:
         return render_template(
-            'deletecategory-item.html', item=itemToDelete, category = category, login_session = login_session)
+            'deletecategory-item.html', item=itemToDelete, 
+            category = category, login_session = login_session)
     # return 'This page will be for deleting restaurant %s' % restaurant_id
 
 
