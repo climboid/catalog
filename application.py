@@ -170,10 +170,6 @@ def intropage():
     categories = session.query(Category).all()
     items = session.query(CategoryItem).all()
     credentials = login_session.get('credentials')
-    
-    # state = ''.join(random.choice(string.ascii_uppercase + string.digits)
-    #                 for x in xrange(32))
-    # login_session['state'] = state
     if credentials is None:
         return render_template('category.html', categories = categories, 
             items = items)

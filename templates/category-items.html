@@ -11,7 +11,7 @@
 		  {% endfor %}
 		  </ul>
 		</div>
-		<div class="col-xs-9">
+		<div class="col-xs-6">
 			<h2>{{ category.name }} ({{items|length}} items)</h2>
 		  <ul class="list-unstyled">
 		  {% for category_item in items %}
@@ -22,6 +22,10 @@
 		      </li>
 		  {% endfor %}
 		  </ul>
+		</div>
+		<div class="col-xs-3 text-right">
+			<br>
+			<a href="{{url_for('intropage')}}">Back to Most Recent Items</a>
 		</div>
 	</div>
 {% endblock %}	
